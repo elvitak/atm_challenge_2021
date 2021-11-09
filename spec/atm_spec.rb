@@ -31,14 +31,25 @@ RSpec.describe Atm do
             expect(subject.withdraw(45, account)).to eq expected_output
         end
     end
-    describe 'user has insufficient funds' do
+    describe 'user is rejected a withdrawal' do
         it 'is expected to reject an withdrawal' do
             expected_output = {
                 status: false,
-                message: "insufficient funds",
-                date: Date.today,
+                message: "insufficient funds in account",
+                date: Date.today
             }
             expect(subject.withdraw(105, account)).to eq expected_output
+        
         end
+        
+        it 'is expected to reject withdraw if ATM has insufficient funds' do
+            subject.funds = 50
+            expected_output = { 
+                status: false, 
+                message: 'insufficient funds in ATM',
+                date: Date.today
+        }    
+        expect(subject.withdraw(100, account)).to eq expected_output
+        end    
     end
 end
