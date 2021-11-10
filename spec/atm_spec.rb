@@ -2,13 +2,19 @@ require './lib/atm.rb'
 
 RSpec.describe Atm do 
     subject { Atm.new } # can be omitted
-    let (:account) { instance_double('Account', pin_code: '1234' )}
+    let (:account) { instance_double('Account', pin_code: '1234', exp_date: "04/24" )}
 
-    before do
-        allow(account).to receive(:balance).and_return(100)
-        allow(account).to receive(:balance=)
-    end
+    #before do
+    #    allow(account).to receive(:balance).and_return(100)
+    #    allow(account).to receive(:balance=)
+    #end
     describe 'user has enough funds to withdraw money' do
+
+        before do
+            allow(account).to receive(:balance).and_return(100)
+            allow(account).to receive(:balance=)
+        end
+
 
         it 'is expected to hold $1000 when instantiated' do 
             expect(subject.funds).to eq 1000 
@@ -32,6 +38,14 @@ RSpec.describe Atm do
         end
     end
     describe 'user is rejected a withdrawal' do
+        
+        before do
+            allow(account).to receive(:balance).and_return(100)
+            allow(account).to receive(:balance=)
+        end
+        
+        
+        
         it 'is expected to reject an withdrawal' do
             expected_output = {
                 status: false,
@@ -60,6 +74,19 @@ RSpec.describe Atm do
              }
             expect(subject.withdraw(50, 9999, account)).to eq expected_output
         end
+
+        it 'is expected to reject withdraw if the card is expired' do
+            allow(account).to receive(:exp_date).and_return('12/20')
+            expected_output = {
+              status: false,
+              message: 'card expired',
+              date: Date.today
+            }
+            expect(subject.withdraw(6, '1234', account)).to eq expected_output
+        end
+
+
+
 
     end
 

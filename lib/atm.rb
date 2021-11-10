@@ -26,7 +26,13 @@ class Atm
             status: false, 
             message: 'wrong pin', 
             date: Date.today
-        } 
+            }
+        when card_expired?(account.exp_date)
+            {
+                status: false, 
+                message: 'card expired', 
+                date: Date.today
+            }
         else
             perform_transaction(amount, account)
         end 
@@ -44,6 +50,10 @@ class Atm
 
     def  insufficent_funds_in_account?(amount, account) 
         amount > account.balance
+    end
+
+    def card_expired?(exp_date)
+        Date.strptime(exp_date, '%m/%y') < Date.today
     end
 
     def perform_transaction(amount, account)
