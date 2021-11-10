@@ -2,20 +2,26 @@ require './lib/atm.rb'
 
 RSpec.describe Atm do 
     subject { Atm.new } # can be omitted
-    let (:account) { instance_double('Account', pin_code: '1234' )}
+    let (:account) { instance_double('Account', pin_code: '1234', exp_date: "04/24", account_status: :active)}
 
-    before do
-        allow(account).to receive(:balance).and_return(100)
-        allow(account).to receive(:balance=)
-    end
+    #before do
+    #    allow(account).to receive(:balance).and_return(100)
+    #    allow(account).to receive(:balance=)
+    #end
     describe 'user has enough funds to withdraw money' do
+
+        before do
+            allow(account).to receive(:balance).and_return(100)
+            allow(account).to receive(:balance=)
+        end
+
 
         it 'is expected to hold $1000 when instantiated' do 
             expect(subject.funds).to eq 1000 
         end
 
         it 'is expected to reduce funds on withdraw' do
-            subject.withdraw(50, '1234', account)
+            subject.withdraw(50, '1234', account, :active)
             expect(subject.funds).to eq 950
         end
 
@@ -28,17 +34,25 @@ RSpec.describe Atm do
                 amount: 45
             }
 
-            expect(subject.withdraw(45,'1234', account)).to eq expected_output
+            expect(subject.withdraw(45,'1234', account, :active)).to eq expected_output
         end
     end
     describe 'user is rejected a withdrawal' do
-        it 'is expected to reject an withdrawal' do
+        
+        before do
+            allow(account).to receive(:balance).and_return(100)
+            allow(account).to receive(:balance=)
+        end
+        
+        
+        
+        it 'is expected to reject a withdraw' do
             expected_output = {
                 status: false,
                 message: "insufficient funds in account",
                 date: Date.today
             }
-            expect(subject.withdraw(105, '1234', account)).to eq expected_output
+            expect(subject.withdraw(105, '1234', account, :active)).to eq expected_output
         
         end
         
@@ -49,7 +63,7 @@ RSpec.describe Atm do
                 message: 'insufficient funds in ATM',
                 date: Date.today
         }    
-        expect(subject.withdraw(100,'1234', account)).to eq expected_output
+        expect(subject.withdraw(100,'1234', account, :active)).to eq expected_output
         end    
 
         it 'is expected to reject withdraw if the pin is wrong' do 
@@ -58,8 +72,35 @@ RSpec.describe Atm do
                 message: 'wrong pin', 
                 date: Date.today
              }
-            expect(subject.withdraw(50, 9999, account)).to eq expected_output
+            expect(subject.withdraw(50, 9999, account, :active)).to eq expected_output
         end
+
+        it 'is expected to reject withdraw if the card is expired' do
+            allow(account).to receive(:exp_date).and_return('12/20')
+            expected_output = {
+              status: false,
+              message: 'card expired',
+              date: Date.today
+            }
+            expect(subject.withdraw(6, '1234', account, :active)).to eq expected_output
+        end
+
+        it 'is expected to reject withdraw if the account is disabled' do
+            allow(account).to receive(:account_status).and_return(:disabled)
+            expected_output = {
+                status: false,
+                message: 'card disabled',
+                date: Date.today
+            }
+            expect(subject.withdraw(45, '1234', account, :disabled)).to eq expected_output
+        end
+        
+        #it 'it is expected to reject withdraw if the account is disabled' do
+        #    allow(account).to receive(:account_status).and_return(:disabled)
+        #    expected_output = { status: false, message: 'disabled account', date: Date.today }
+        #    expect(subject.withdraw(45, '1234', account)).to eq expected_output
+        #  end
+
 
     end
 
