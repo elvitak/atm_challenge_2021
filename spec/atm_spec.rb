@@ -1,7 +1,7 @@
 require './lib/atm.rb'
 
 RSpec.describe Atm do
-  subject { Atm.new } # can be omitted
+  subject { described_class.new } # can be omitted
   let (:account) do
     instance_double(
       'Account',
