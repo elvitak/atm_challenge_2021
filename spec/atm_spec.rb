@@ -46,7 +46,7 @@ RSpec.describe Atm do
         
         
         
-        it 'is expected to reject an withdrawal' do
+        it 'is expected to reject a withdraw' do
             expected_output = {
                 status: false,
                 message: "insufficient funds in account",
@@ -85,16 +85,21 @@ RSpec.describe Atm do
             expect(subject.withdraw(6, '1234', account, :active)).to eq expected_output
         end
 
-        it 'is expected to reject withdrawal if the card is disabled'
-            
+        it 'is expected to reject withdraw if the account is disabled' do
+            allow(account).to receive(:account_status).and_return(:disabled)
             expected_output = {
                 status: false,
                 message: 'card disabled',
                 date: Date.today
             }
+            expect(subject.withdraw(45, '1234', account, :disabled)).to eq expected_output
         end
         
-
+        #it 'it is expected to reject withdraw if the account is disabled' do
+        #    allow(account).to receive(:account_status).and_return(:disabled)
+        #    expected_output = { status: false, message: 'disabled account', date: Date.today }
+        #    expect(subject.withdraw(45, '1234', account)).to eq expected_output
+        #  end
 
 
     end
