@@ -50,7 +50,7 @@ RSpec.describe Atm do
       allow(account).to receive(:balance=)
     end
 
-    it 'is expected to reject a withdraw' do
+    it 'is expected to reject withdraw if insufficient funds in account' do
       expected_output = {
         status: false,
         message: 'insufficient funds in account',
