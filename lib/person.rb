@@ -23,4 +23,13 @@ class Person
   def create_account
     @account = Account.new(owner: self)
   end
+
+  def deposit(amount)
+    @account == nil ? missing_account : deposit_funds(amount)
+  end
+
+  def deposit_funds(amount)
+    @cash -= amount
+    @account.balance += amount
+  end
 end
