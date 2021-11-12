@@ -37,14 +37,13 @@ RSpec.describe Person do
     it 'is expected to be able deposit funds' do
       expect(subject.deposit(100)).to be_truthy
     end
-
-    describe 'can not manage funds if no account been created' do
-      it 'is expected to not be able deposit funds if no account been created' do
-        expect { subject.deposit(100) }.to raise_error(
-          RuntimeError,
-          'No account present',
-        )
-      end
+  end
+  describe 'can not manage funds if no account been created' do
+    it 'is expected to not be able deposit funds if no account been created' do
+      expect { subject.deposit(100) }.to raise_error(
+        RuntimeError,
+        'No account present',
+      )
     end
   end
 end
