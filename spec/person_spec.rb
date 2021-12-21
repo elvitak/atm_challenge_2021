@@ -16,7 +16,7 @@ RSpec.describe Person do
     expect(subject.cash).to eq 0
   end
 
-  it 'is expected to have a :account attribute' do
+  it 'is expected to have an :account attribute' do
     expect(subject.account).to be nil
   end
 
@@ -41,7 +41,7 @@ RSpec.describe Person do
     it 'is expected to add funds to the account balance and deduct from cash' do
       subject.cash = 100
       subject.deposit(100)
-      expect(subject.account.balance).to be 100
+      expect(subject.account.balance).to be 1100
       expect(subject.cash).to be 0
     end
 
