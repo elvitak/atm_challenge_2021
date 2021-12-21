@@ -1,5 +1,5 @@
-require './lib/person.rb'
-require './lib/atm.rb'
+require './lib/person'
+require './lib/atm'
 
 RSpec.describe Person do
   subject { described_class.new(name: 'Trio') }
@@ -46,37 +46,40 @@ RSpec.describe Person do
     end
 
     it 'is expected to withdraw funds' do
-      command = lambda { subject.withdraw(amount: 100, 
-      pin: subject.account.pin_code, 
-      account: subject.account,
-      atm: atm) }
+      command = lambda {
+        subject.withdraw(amount: 100,
+                         pin: subject.account.pin_code,
+                         account: subject.account,
+                         atm: atm)
+      }
       expect(command.call).to be_truthy
     end
 
-    it "is expected to raise an error if no ATM is present" do
-      command = lambda { subject.withdraw(amount: 100, 
-      pin: subject.account.pin_code, 
-      account: subject.account) }
-      expect { command.call }.to raise_error "an ATM is required"
+    it 'is expected to raise an error if no ATM is present' do
+      command = lambda {
+        subject.withdraw(amount: 100,
+                         pin: subject.account.pin_code,
+                         account: subject.account)
+      }
+      expect { command.call }.to raise_error 'An ATM is required'
     end
 
-    it "is expected to add to cash and deduct from funds and balance" do
+    it 'is expected to add to cash and deduct from funds and balance' do
       subject.cash = 100
       subject.deposit(100)
-      subject.withdraw(amount: 100, 
-      pin: subject.account.pin_code, 
-      account: subject.account,
-      atm: atm)
-      expect(subject.account.balance).to be 0
+      subject.withdraw(amount: 100,
+                       pin: subject.account.pin_code,
+                       account: subject.account,
+                       atm: atm)
+      expect(subject.account.balance).to be 1000
       expect(subject.cash).to be 100
     end
-      
   end
   describe 'can not manage funds if no account been created' do
     it 'is expected to not be able deposit funds if no account been created' do
       expect { subject.deposit(100) }.to raise_error(
         RuntimeError,
-        'No account present',
+        'No account present'
       )
     end
   end
